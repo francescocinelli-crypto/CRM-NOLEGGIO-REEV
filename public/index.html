@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>CRM Noleggio Online</title>
+</head>
+<body>
+  <h1>CRM Noleggio Online</h1>
+  <form id="clienteForm">
+    <input type="text" id="nome" placeholder="Nome Cliente" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Aggiungi Cliente</button>
+  </form>
+
+  <button onclick="scarica()">📥 Scarica Excel</button>
+
+  <ul id="lista"></ul>
+
+  <script>
+    document.getElementById("clienteForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const res = await fetch('/api/clienti', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email })
+      });
+      const data = await res.json();
+      document.getElementById("lista").innerHTML = data.clienti.map(c => `<li>${c.nome} - ${c.email}</li>`).join("");
+    });
+
+    function scarica() {
+      window.location.href = '/api/export';
+    }
+  </script>
+</body>
+</html>
